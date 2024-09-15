@@ -18,7 +18,7 @@ public class OtpService {
 
     private String generateOtp() {
         Random random = new Random();
-        int otp = 100000 + random.nextInt(900000); // Generates 6-digit OTP
+        int otp = 100000 + random.nextInt(900000);
         return String.valueOf(otp);
     }
 
@@ -34,30 +34,39 @@ public class OtpService {
         Otp otp = new Otp();
         otp.setPhoneNumber(phoneNumber);
         otp.setOtpCode(otpCode);
-        otp.setExpireTime(LocalDateTime.now().plusMinutes(5)); // OTP expires in 5 minutes
+        otp.setExpireTime(LocalDateTime.now().plusMinutes(5));
         otpRepository.save(otp);
 
         return otp;
     }
 
     public boolean isOtpValid(String phoneNumber, String enteredOtp) {
+
         Optional<Otp> optionalOtp = otpRepository.findByPhoneNumberAndIsVerifiedFalse(phoneNumber);
         if (optionalOtp.isPresent()) {
             Otp otp = optionalOtp.get();
 
-            // Check if OTP is expired
+            System.out.println("Retrieved OTP: " + otp);
+            System.out.println("Entered OTP: " + enteredOtp);
+
             if (otp.getExpireTime().isBefore(LocalDateTime.now())) {
-                otpRepository.delete(otp); // Delete expired OTP
+                otpRepository.delete(otp);
+                System.out.println("OTP expired and deleted.");
                 return false;
             }
 
-            // Check if entered OTP matches stored OTP
             if (otp.getOtpCode().equals(enteredOtp)) {
                 otp.setIsVerified(true);
-                otpRepository.delete(otp); // Delete OTP after verification
+                otpRepository.delete(otp);
+                System.out.println("OTP verified and deleted.");
                 return true;
+            } else {
+                System.out.println("OTP code does not match.");
             }
+        } else {
+            System.out.println("No OTP found for phone number.");
         }
         return false;
     }
+
 }

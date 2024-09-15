@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "otps")
+@Table(name = "otp")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Otp {

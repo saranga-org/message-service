@@ -15,8 +15,7 @@ public class OtpCleanupService {
 
     private OtpRepository otpRepository;
 
-    // Clean up expired OTPs every hour
-    @Scheduled(fixedRate = 3600000) // 3600000 ms = 1 hour
+    @Scheduled(fixedRate = 3600000)
     public void deleteExpiredOtps() {
         List<Otp> expiredOtps = otpRepository.findByExpireTimeBefore(LocalDateTime.now());
         otpRepository.deleteAll(expiredOtps);
